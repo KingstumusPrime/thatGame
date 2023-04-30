@@ -1,0 +1,34 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">Live Chat</div>
+        <ul class="list-group" id="chat-output"></ul>
+        <div class="panel-body">
+          <form id="chat">
+            <div class="input-group">
+              <input type="text" class="form-control" id="chat-input" />
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">Send Message</button>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <canvas width="1200px" height="500px" style="border: 5px dotted black;"></canvas>
+    <!-- Instantiate PubNub -->
+    <script src="//cdn.pubnub.com/pubnub.min.js"></script>
+    <script src="chat.js"></script>
+    <script src="player.js"></script>
+
+</body>
+</html>
