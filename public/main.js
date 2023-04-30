@@ -1,6 +1,6 @@
 
 
-const socket = io("ws://localhost:8080", {transports: ["websocket"]});
+const socket = io("https://snazzy-froyo-940f03.netlify.app/", {transports: ["websocket"]});
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false; 
