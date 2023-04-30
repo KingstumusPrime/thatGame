@@ -15,7 +15,7 @@ var players = {};
 // instancing
 
 var app = express(); 
-var server = http.createServer(app); // start server
+var server = http.createServer("https://snazzy-froyo-940f03.netlify.app/"); // start server
 var io = socketIO(server); // pass the server so it runs on socket.io
 app.set("port", port) // set server port
 
