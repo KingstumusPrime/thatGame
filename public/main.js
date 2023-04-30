@@ -1,6 +1,6 @@
 
 
-const socket = io("https://snazzy-froyo-940f03.netlify.app/", {transports: ["websocket"]});
+const socket = io("ws://localhost:8080", {transports: ["websocket"]});
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false; 
@@ -176,7 +176,7 @@ function update(){
     // Move left by subtracting speed from left
     velocity.x = maxSpeed * -1;
   }else{
-    velocity.x = 0
+    velocity.x = 0;
   }
   if(currKey["ArrowRight"]){
     // Move right by adding speed to left
