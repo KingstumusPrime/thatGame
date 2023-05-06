@@ -1,7 +1,7 @@
 
 
-const socket = io("ws://localhost:8080", {transports: ["websocket"]});
-// const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]}
+// const socket = io("ws://localhost:8080", {transports: ["websocket"]});
+const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]}
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false; 
