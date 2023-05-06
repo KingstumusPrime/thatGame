@@ -19,3 +19,7 @@ img {
     text-align: center;
     font-size: 80px;
 }
+
+canvas {
+    image-rendering: pixelated;
+}

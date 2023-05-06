@@ -15,8 +15,16 @@ var players = {};
 // instancing
 
 var app = express(); 
-var server = http.createServer(app); // start server
-var io = socketIO(server); // pass the server so it runs on socket.io
+
+
+
+var server = http.createServer(app); // start se
+
+
+
+
+var io = socketIO(server); // pass the server so
+
 app.set("port", port) // set server port
 
 //used ‘public’ folder to use external CSS and JS
@@ -38,7 +46,7 @@ io.on("connection", function(socket) {
     player_id: socket.id,
     x: 5,
     y: 5,
-    width: 96,
+    width: 90,
     height: 144,
     color: "black",
     anim: 0,

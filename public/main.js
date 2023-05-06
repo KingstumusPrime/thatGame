@@ -1,6 +1,7 @@
 
 
-const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]});
+const socket = io("ws://localhost:8080", {transports: ["websocket"]});
+// const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]}
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false; 
@@ -9,11 +10,12 @@ ctx.imageSmoothingEnabled = false;
 var players = {};
 var uid = "";
 var velocity = {x: 0, y: 1};
-var objects = [{x: 0, y: 450, width: 1800, height: 50}, {x: 250, y: 300, width: 500, height: 150}];
+var objects = [];
 var currKey = {};
 var onGround;
 var banditImage = document.querySelector("#LBandit");
 var redImage = document.querySelector("#red");
+var tileMap = document.querySelector("#map")
 var frame = 0;
 var flip = -1; // local version of flipped var sent to server
 var attacking = false; // local variable that keeps track of wether or not the attack has finished;
@@ -27,6 +29,8 @@ const gravity = 5;
 const jumpHeight = 42;
 var beat = new Audio('./public/assets/heart.wav');
 beat.loop = true;
+
+var map = [];
 // client-side
 socket.on("new_player", (arg) => {
     console.log(arg.player_id);
@@ -37,7 +41,13 @@ socket.on("new_player", (arg) => {
 socket.on("actualPlayers", (data) => {
     players = data.p;
     uid = data.uid;
-    drawPlayers();
+    fetch("./public/map.json").then((response) => response.json()).then((json) => {
+      console.log(json)
+      let map = json["layers"][0].data;
+      createObjects(32, map, 100);
+      drawPlayers();
+    });
+
 });
 
 socket.on("player_disconnect", (id) => {
@@ -68,7 +78,7 @@ socket.on("damagePlayer" , function(HurtData) {
     frame = 0;
     tSinceHurt = 0;
     if((players[uid].health - HurtData.health)/players[uid].maxHealth <= 0.35){
-      //beat.play();
+      beat.play();
     }
 
   }
@@ -77,6 +87,23 @@ socket.on("damagePlayer" , function(HurtData) {
     players[HurtData.id].health = 0;
   }
 })
+
+function getRndColor() {
+  var r = 255*Math.random()|0,
+      g = 255*Math.random()|0,
+      b = 255*Math.random()|0;
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+
+function createObjects(size, objs, width){
+  for (let i = 0; i < objs.length; i++) {
+    const element = objs[i];
+    if(element != -1){
+      const c = getRndColor(); 
+      objects.push({x: (i%width) * size, y: Math.floor(i/width)  * size, width: size, height: size, c: c, tile: element});
+    }
+  }
+}
 
 document.addEventListener("keydown", function(event) {
   currKey[event.key] = true;
@@ -193,13 +220,20 @@ function update(){
     }
 
   }
-  const cPos = players[uid].x + velocity.x; // keep track of the real pos of player 
+  const cPos = players[uid].x; // keep track of the real pos of player 
+  const yPos = players[uid].y;
   if(cPos > canvas.width * 0.8 - scroll.x && velocity.x >= 0){
     scroll.x -= 10 + velocity.x;
   }else if(cPos < canvas.width * 0.2 - scroll.x && velocity.x <= 0){
     scroll.x += 10 - velocity.x;;
   }
   
+
+  if(yPos > canvas.height * 0.6 - scroll.y && velocity.y >= 0){
+    scroll.y -= 10 + velocity.y;
+  }else if(yPos < canvas.height * 0.2 - scroll.y && velocity.y <= 0){
+    scroll.y += 10 - velocity.y;
+  }
 }
 
 function boxCollision(obj1, obj2){
@@ -282,14 +316,22 @@ function drawPlayers() {
 
 
   for (const objId in objects){
-    ctx.fillStyle = "red";
-    ctx.fillRect(objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height)
+    if(debug){
+      ctx.fillStyle = objects[objId].c;
+      ctx.fillRect(objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height)
+    }
+
+    ctx.drawImage(tileMap, 16 *  Math.floor(objects[objId].tile), 16 * ((objects[objId].tile - Math.floor(objects[objId].tile)) * 10), 16, 16, objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height);
   }
   for (const playerId in players) {
     // Draw each player
     drawPlayer(players[playerId]);
+    if(players[playerId] == uid){
+      if((players[uid].health - HurtData.health)/players[uid].maxHealth <= 0.35){
+        ctx.drawImage(redImage, 0, 0, canvas.width, canvas.height)
+      }
+    }
   }
-  ctx.drawImage(redImage, 0, 0)
 
   setTimeout(drawPlayers,100);
   
