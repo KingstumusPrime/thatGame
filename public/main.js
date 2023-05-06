@@ -100,7 +100,11 @@ function createObjects(size, objs, width){
     const element = objs[i];
     if(element != -1){
       const c = getRndColor(); 
-      objects.push({x: (i%width) * size, y: Math.floor(i/width)  * size, width: size, height: size, c: c, tile: element});
+      if(element == 0.19){
+        objects.push({x: (i%width) * size, y: Math.floor(i/width)  * size, width: size, height: size, c: c, tile: element, type: "water"});
+      }else{
+        objects.push({x: (i%width) * size, y: Math.floor(i/width)  * size, width: size, height: size, c: c, tile: element, type: "solid"});
+      }
     }
   }
 }
@@ -268,13 +272,15 @@ function playerCollides(p, objs){
   for(const obj in objs){
     if(boxCollision(cp, objs[obj]) && !onGround){
 
-      if(velocity.y > 0 ){
-        onGround = true;
-        velocity.y = 0;
-        players[uid].y = objs[obj].y - p.height - 0.01;
-        socket.emit("setPos", {x:  players[uid].x + velocity.x, y: objs[obj].y - p.height - 0.01});
+      if(velocity.y > 0){
+          onGround = true;
+          if( objs[obj].type != "water"){
+            velocity.y = 0;
+            players[uid].y = objs[obj].y - p.height - 0.01;
+            socket.emit("setPos", {x:  players[uid].x + velocity.x, y: objs[obj].y - p.height - 0.01});
+          }
       }
-      if(velocity.y < 0){
+      if(velocity.y < 0 && objs[obj].type != "water"){
         velocity.y = 0;
         players[uid].y = objs[obj].y + objs[obj].height + 0.01;
         socket.emit("setPos", {x:  players[uid].x, y: objs[obj].y + objs[obj].height - 0.01});
@@ -285,13 +291,13 @@ function playerCollides(p, objs){
   }
   cp.x += velocity.x;
 for(const obj in objs){
-  if(boxCollision(players[uid], objs[obj] )){
-    if(velocity.x > 0){
+  if(boxCollision(players[uid], objs[obj])){
+    if(velocity.x > 0 && objs[obj].type != "water"){
       velocity.x = 0;
       socket.emit("setPos", {x: objs[obj].x - p.width - .01, y:players[uid].y});
       players[uid].x =  objs[obj].x - p.width - 0.01;
     }
-    if(velocity.x < 0){
+    if(velocity.x < 0 && objs[obj].type != "water"){
       velocity.x = 0;
       socket.emit("setPos", {x: objs[obj].x + objs[obj].width + 0.01, y:players[uid].y});
       players[uid].x =  objs[obj].x + objs[obj].width + 0.01;
@@ -325,8 +331,14 @@ function drawPlayers() {
       ctx.fillStyle = objects[objId].c;
       ctx.fillRect(objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height)
     }
-
-    ctx.drawImage(tileMap, 16 *  Math.floor(objects[objId].tile), 16 * ((objects[objId].tile - Math.floor(objects[objId].tile)) * 10), 16, 16, objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height);
+    let tileY = objects[objId].tile;
+    if((tileY + "").split(".")[1].length == 1){
+      tileY = Math.round(tileY%1 * 10)
+    }else{
+      tileY = Math.round(tileY%1 * 100)
+    }
+    console.log(tileY)
+    ctx.drawImage(tileMap, 16 *  Math.floor(objects[objId].tile), tileY * 16, 16, 16, objects[objId].x + scroll.x, objects[objId].y + scroll.y, objects[objId].width, objects[objId].height);
   }
   for (const playerId in players) {
     // Draw each player

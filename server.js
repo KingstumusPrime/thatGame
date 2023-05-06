@@ -44,8 +44,8 @@ io.on("connection", function(socket) {
   console.log("Someone has connected");
   players[socket.id] = {
     player_id: socket.id,
-    x: 5,
-    y: 5,
+    x: 50,
+    y: 450,
     width: 90,
     height: 144,
     color: "black",
