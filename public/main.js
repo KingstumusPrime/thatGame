@@ -274,6 +274,11 @@ function playerCollides(p, objs){
         players[uid].y = objs[obj].y - p.height - 0.01;
         socket.emit("setPos", {x:  players[uid].x + velocity.x, y: objs[obj].y - p.height - 0.01});
       }
+      if(velocity.y < 0){
+        velocity.y = 0;
+        players[uid].y = objs[obj].y + objs[obj].height + 0.01;
+        socket.emit("setPos", {x:  players[uid].x, y: objs[obj].y + objs[obj].height - 0.01});
+      }
     }
 
   
