@@ -134,6 +134,7 @@ io.on("connection", function(socket) {
     health: 40,
     maxHealth: 40,
     gold: 0,
+    img: "bandit",
     };
 
   socket.emit("actualPlayers", {"p": players, "uid": socket.id, "gold": gold}); //sends info back to that socket and not to all the other sockets
@@ -165,6 +166,11 @@ io.on("connection", function(socket) {
     players[socket.id].flipped = animData.flipped;
   })
 
+
+socket.on("setImg", function(data) {
+  io.emit("setImg", data);
+  players[data.id].img = data.img;
+})
 
   socket.on("damagePlayer" , function(HurtData) {
     io.emit("damagePlayer", HurtData);
@@ -198,7 +204,8 @@ io.on("connection", function(socket) {
       health: 40,
       maxHealth: 40,
       gold: 0,
-      }})
+      img: "bandit",
+      }});
     players[pid] =  {
       player_id: pid,
       x: 50,
@@ -212,7 +219,8 @@ io.on("connection", function(socket) {
       health: 40,
       maxHealth: 40,
       gold: 0,
-      };;
+      img: "bandit",
+      };
   })
 
   socket.on("CollectGold", function(goldData){

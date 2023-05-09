@@ -1,7 +1,7 @@
 
 
-// const socket = io("ws://localhost:8080", {transports: ["websocket"]});
-const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]})
+const socket = io("ws://localhost:8080", {transports: ["websocket"]});
+// const socket = io("https://banditbashapi.onrender.com/", {transports: ["websocket"]})
 var canvas = document.querySelector("canvas");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false; 
@@ -15,6 +15,7 @@ var currKey = {};
 var onGround;
 // Images
 var banditImage = document.querySelector("#LBandit");
+var bBanditImage = document.querySelector("#bBandit");
 const redImage = document.querySelector("#red");
 const tileMap = document.querySelector("#map")
 const cityTileMap = document.querySelector("#cityMap")
@@ -59,6 +60,10 @@ socket.on("actualPlayers", (data) => {
 
 });
 
+socket.on("setImg", function(data) {
+  players[data.id].img = data.img;
+})
+
 socket.on("player_disconnect", (id) => {
     const quitP = players[id]
     delete players[id];
@@ -97,8 +102,10 @@ socket.on("setPos", (data) => {
 
 socket.on("CollectGold", function(goldData) {
   players[goldData.player].gold += 1;
-  console.log(goldData);
   delete gold[goldData.id];
+  if( players[goldData.player].health < players[uid].maxHealth){
+    players[goldData.player].health += 10;
+  }
 })
 
 socket.on("resetPlayer", function(data) {
@@ -344,7 +351,11 @@ function drawPlayer(player) {
     ctx.fillText(player.gold, player.x + player.width * 0.5 + scroll.x, player.y +  10 + scroll.y, player.width);
   }
   ctx.scale(player.flipped, 1);
-  ctx.drawImage(banditImage, 48 * player.frame, 48 * player.anim, 48, 48, player.x * player.flipped + ((-18  + scroll.x) * player.flipped), (player.y + scroll.y ) - 20, 144 * player.flipped, 144);
+  if(player.img == "bandit"){
+    ctx.drawImage(banditImage, 48 * player.frame, 48 * player.anim, 48, 48, player.x * player.flipped + ((-18  + scroll.x) * player.flipped), (player.y + scroll.y ) - 20, 144 * player.flipped, 144);
+  }else{
+    ctx.drawImage(bBanditImage, 48 * player.frame, 48 * player.anim, 48, 48, player.x * player.flipped + ((-18  + scroll.x) * player.flipped), (player.y + scroll.y ) - 20, 144 * player.flipped, 144);
+  }
   // Restore the context state
   ctx.restore();
 }
@@ -403,6 +414,9 @@ function goldCollides(gId){
   if(boxCollision(players[uid], gold[gId])){
     console.log("MINE MINE MINE MINE");
     socket.emit("CollectGold", {"id": gId, "player": uid});
+    if(players[uid].gold > 4){
+      socket.emit("setImg", {id: uid, img: "blue"});
+    }
   }
 }
 
