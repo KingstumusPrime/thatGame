@@ -22,4 +22,5 @@ img {
 
 canvas {
     image-rendering: pixelated;
+    position: relative;
 }
