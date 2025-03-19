@@ -6,7 +6,7 @@ After making my first [multiplayer game]() I had been wanting to make a more com
 
 * arrow keys move
 * space to attack
-* 5 coins and your costume changes
+* objective: collect treasure!
 
 > If you wish to play the game it is available right [here](https://banditbashapi.onrender.com/) (NOTE: like the rest of my games this is on free servers and may take a bit to spin up). 
 
