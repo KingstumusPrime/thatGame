@@ -1,6 +1,6 @@
 # That Game (that I wanted to make forever)
 
-After making my first [multiplayer game]() I had been wanting to make a more complex one for a while. Inspired by classsic .io games I had wanted to make a online platformer forever hence young me naming the proejct "that game" as in "that game I had tried and failed to make a ton of times". I had tried to continue using firebase database for a while but that failed my quickly when physics got involved. For this game I tried using socket.io and that definitally gave me a boost in speed. The only issue was that I was sending player data as full objects instead of string giving me a massive drop in speed.
+After making my first [multiplayer game](https://github.com/KingstumusPrime/multiplayerGameCodinClub), I had been wanting to make a more complex one for a while. Inspired by classic .io games, I had wanted to make an online platformer forever; hence, young me named the project "that game," as in "that game I had tried and failed to make a ton of times." I had tried to continue using the Firebase database for a while, but that failed quickly when physics got involved. For this game I tried using socket.io, and that definitely gave me a boost in speed. The only issue was that I was sending player data as full objects instead of strings, giving me a massive drop in speed.
 
 ## Controls
 
